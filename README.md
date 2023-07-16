@@ -8,7 +8,7 @@ Pre-requisites : Java 8 and Maven must installed
 > mvn clean install
 2. Run the jar using the command
 > jar -jar path/to/jar/
-3. Use any API testing tool like POSTMAN and hit the url localhost:8080/identity
+3. Use any API testing tool like POSTMAN and hit the url http://localhost:8080/identify
 4. Sample Curl Request :
 > curl --location 'localhost:8080/identify' \
 --header 'Content-Type: application/json' \
