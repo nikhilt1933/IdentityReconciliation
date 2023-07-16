@@ -10,7 +10,7 @@ Pre-requisites : Java 8 and Maven must installed
 > jar -jar path/to/jar/
 3. Use any API testing tool like POSTMAN and hit the url localhost:8080/identity
 4. Sample Curl :
-> curl --location 'localhost:8080/identity' \
+> curl --location 'localhost:8080/identify' \
 --header 'Content-Type: application/json' \
 --data-raw '{
 "email": "sample@email.com",

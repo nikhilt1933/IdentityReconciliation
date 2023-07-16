@@ -18,7 +18,7 @@ public class IdentityReconciliationController {
     @Autowired
     public IdentityReconciliationService identityReconciliationService;
 
-    @PostMapping(path = "/identity", consumes = MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(path = "/identify", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public IdentityResponse identity(@RequestBody IdentityRequest request) {
         LOGGER.info("Request received : {}", request);
