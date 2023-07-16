@@ -1,10 +1,10 @@
-INSERT INTO Contact(Email, Phone, Precedence, LinkedId, CreatedOn, UpdatedOn) VALUES('abc@test.com', '9028435689', 'primary', '-1', NOW(), NOW());
+INSERT INTO Contact(Email, Phone, Precedence, LinkedId, CreatedOn, UpdatedOn) VALUES('abc@test.com', '9028435689', 'primary', '-1', '2023-07-16 18:03:35.430038', '2023-07-16 18:03:35.430038');
 
-INSERT INTO Contact(Email, Phone, Precedence, LinkedId, CreatedOn, UpdatedOn) VALUES('xyz@test.com', '34340340', 'primary', '-1', NOW(), NOW());
+INSERT INTO Contact(Email, Phone, Precedence, LinkedId, CreatedOn, UpdatedOn) VALUES('xyz@test.com', '34340340', 'primary', '-1', '2023-07-16 18:03:45.430038', '2023-07-16 18:03:45.430038');
 
-INSERT INTO Contact(Email, Phone, Precedence, LinkedId, CreatedOn, UpdatedOn) VALUES('sdfpdf@test.com', '23439000', 'primary', '-1', NOW(), NOW());
+INSERT INTO Contact(Email, Phone, Precedence, LinkedId, CreatedOn, UpdatedOn) VALUES('sdfpdf@test.com', '23439000', 'primary', '-1', '2023-07-16 18:13:35.430038', '2023-07-16 18:13:35.430038');
 
-INSERT INTO Contact(Email, Phone, Precedence, LinkedId, CreatedOn, UpdatedOn) VALUES('baps@test.com', '9819990340330', 'primary', '-1', NOW(), NOW());
+INSERT INTO Contact(Email, Phone, Precedence, LinkedId, CreatedOn, UpdatedOn) VALUES('baps@test.com', '9819990340330', 'primary', '-1', '2023-07-16 18:03:35.430038', '2023-07-16 18:03:35.430038');
 
 
 INSERT INTO PRIMARYRECORD(CONTACTID, PRIMARYCONTACTID) VALUES(1,1);
