@@ -48,3 +48,16 @@ Refer [Design Doc](https://docs.google.com/document/d/1px8OgY_2Lt3jMLxIq18xnPK75
 
 Please find the resume [here](https://drive.google.com/file/d/1YQqZfcwZO6-8cyhZJ2gZNFChNOgPy_PF/view?usp=sharing)
 
+###
+#### Access H2 DB console using the following credentials :
+H2-Console Url : https://identity-recon.uc.r.appspot.com/h2-console
+JDBC-URL : jdbc:h2:mem:f49858e3-b150-4085-aff1-f5e24580ff35
+Username : user
+Password : password
+
+#####
+![img_2.png](img_2.png)
+###
+Querying the tables : 
+
+![img.png](img.png)
