@@ -120,8 +120,8 @@ public class IdentityReconciliationService {
         LOGGER.info("Building response object");
         Contact primaryContact = contactRepository.findById(primaryId).get();
         Mapping mapping = mappingRepository.findById(primaryId).get();
-        Set<String> emailList = new HashSet<>(List.of(primaryContact.getEmail()));
-        Set<String> phoneList = new HashSet<>(List.of(primaryContact.getPhone()));
+        Set<String> emailList = new HashSet<>(Collections.singletonList(primaryContact.getEmail()));
+        Set<String> phoneList = new HashSet<>(Collections.singletonList(primaryContact.getPhone()));
         Set<Integer> secondaryContactList = new HashSet<>();
         JSONArray mappingArray = new JSONArray(mapping.getSecondaryMapping());
         mappingArray.toList().stream()
