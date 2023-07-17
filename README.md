@@ -2,7 +2,7 @@
 
 Identity reconciliation service which handles user reconciliation, identification and merging user contacts.
 
-#### Steps to run the app
+#### Steps to run the app locally
 Pre-requisites : Java 8 and Maven must installed
 1. Clone the project and build to create the jar using the command
 > mvn clean install
@@ -16,6 +16,32 @@ Pre-requisites : Java 8 and Maven must installed
 "email": "sample@email.com",
 "phoneNumber": "9092329020"
 }'
+
+### Application is hosted at : 
+https://identity-recon.uc.r.appspot.com/identify
+
+#### Sample Curl Request : 
+>curl --location 'https://identity-recon.uc.r.appspot.com/identify' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"email": "sample@email.com",
+"phoneNumber": "909232902"
+}'
+
+#### Response : 
+>Response :
+{
+"contact": {
+"primaryContactId": 5,
+"emails": [
+"sample@email.com"
+],
+"phoneNumbers": [
+"9092329020"
+],
+"secondaryContactIds": []
+}
+}
 
 
 Refer [Design Doc](https://docs.google.com/document/d/1px8OgY_2Lt3jMLxIq18xnPK75ZAOCI-HU3YIHoRW_Sc/edit?usp=sharing)
