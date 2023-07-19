@@ -51,7 +51,7 @@ Please find the resume [here](https://drive.google.com/file/d/1YQqZfcwZO6-8cyhZJ
 ###
 #### Access H2 DB console using the following credentials :
 H2-Console Url : https://identity-recon.uc.r.appspot.com/h2-console
-JDBC-URL : jdbc:h2:mem:f49858e3-b150-4085-aff1-f5e24580ff35
+JDBC-URL : jdbc:h2:mem:memdb
 Username : user
 Password : password
 
