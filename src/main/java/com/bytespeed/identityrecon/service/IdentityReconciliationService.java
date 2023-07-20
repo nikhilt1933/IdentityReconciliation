@@ -55,7 +55,7 @@ public class IdentityReconciliationService {
         }
 
         if (CollectionUtils.isEmpty(emailMatch) && CollectionUtils.isEmpty(phoneMatch)) {
-            primaryId = createNewContactV2(request);
+            primaryId = createNewContactV2(request, -1);
             createPrimaryRecord(primaryId, primaryId);
             createNewMapping(primaryId, "[]");
         } else if (CollectionUtils.isEmpty(emailMatch) || CollectionUtils.isEmpty(phoneMatch)) {
@@ -71,7 +71,7 @@ public class IdentityReconciliationService {
                     !"null".equalsIgnoreCase(request.getEmail()) &&
                     !"null".equalsIgnoreCase(request.getPhoneNumber())) {
                 LOGGER.info("New Email or Phone in present in request");
-                Integer newContactId = createNewContactV2(request);
+                Integer newContactId = createNewContactV2(request, primaryId);
                 createPrimaryRecord(newContactId, primaryId);
                 updateMapping(newContactId, primaryId);
             }
@@ -185,9 +185,9 @@ public class IdentityReconciliationService {
         LOGGER.info("Saved successfully. New Mapping array for Id : {}, {}.", primaryId, mappingArray);
     }
 
-    private Integer createNewContactV2(IdentityRequest request) {
+    private Integer createNewContactV2(IdentityRequest request, Integer primaryId) {
         LOGGER.info("Creating new contact");
-        Contact newContact = buildContact(request);
+        Contact newContact = buildContact(request, primaryId);
         contactRepository.save(newContact);
         LOGGER.info("New Contact created successfully");
         return contactRepository.findMaxId().get();
@@ -213,12 +213,13 @@ public class IdentityReconciliationService {
         LOGGER.info("New mapping created successfully");
     }
 
-    private Contact buildContact(IdentityRequest request) {
+    private Contact buildContact(IdentityRequest request, Integer primaryId) {
+        String precedence = primaryId == -1 ? "primary" : "secondary";
         return Contact.builder()
                 .email(request.getEmail())
                 .phone(request.getPhoneNumber())
-                .precedence("primary")
-                .linkedId(-1)
+                .precedence(precedence)
+                .linkedId(primaryId)
                 .createdOn(FORMAT.format(new Date()))
                 .updatedOn(FORMAT.format(new Date()))
                 .build();
