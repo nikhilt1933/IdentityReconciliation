@@ -3,7 +3,7 @@
 Identity reconciliation service which handles user reconciliation, identification and merging user contacts.
 
 #### Steps to run the app locally
-Pre-requisites : Java 8 and Maven must installed
+Pre-requisites : Java 8 and Maven must be installed
 1. Clone the project and build to create the jar using the command
 > mvn clean install
 2. Run the jar using the command
