@@ -46,7 +46,7 @@ https://identity-recon.uc.r.appspot.com/identify
 
 Refer [Design Doc](https://docs.google.com/document/d/1px8OgY_2Lt3jMLxIq18xnPK75ZAOCI-HU3YIHoRW_Sc/edit?usp=sharing)
 
-Please find the resume [here](https://drive.google.com/file/d/1YQqZfcwZO6-8cyhZJ2gZNFChNOgPy_PF/view?usp=sharing)
+Please find the resume [here](https://drive.google.com/file/d/17YecebaNPXvTeirTJUMW5zp0qcQhpcXP/view?usp=drive_link)
 
 ###
 #### Access H2 DB console using the following credentials :
