@@ -120,8 +120,8 @@ public class IdentityReconciliationService {
         LOGGER.info("Building response object");
         Contact primaryContact = contactRepository.findById(primaryId).get();
         Mapping mapping = mappingRepository.findById(primaryId).get();
-        Set<String> emailList = new HashSet<>(Collections.singletonList(primaryContact.getEmail()));
-        Set<String> phoneList = new HashSet<>(Collections.singletonList(primaryContact.getPhone()));
+        Set<String> emailSet = new HashSet<>();
+        Set<String> phoneSet = new HashSet<>();
         Set<Integer> secondaryContactList = new HashSet<>();
         JSONArray mappingArray = new JSONArray(mapping.getSecondaryMapping());
         mappingArray.toList().stream()
@@ -129,12 +129,18 @@ public class IdentityReconciliationService {
                     Optional<Contact> contact = contactRepository.findById((Integer) contactId);
                     Optional.ofNullable(contact).ifPresent(record -> {
                         if(!StringUtils.isEmpty(record.get().getEmail()))
-                            emailList.add(record.get().getEmail());
+                            emailSet.add(record.get().getEmail());
                         if(!StringUtils.isEmpty(record.get().getPhone()))
-                            phoneList.add(record.get().getPhone());
+                            phoneSet.add(record.get().getPhone());
                         secondaryContactList.add(record.get().getId());
                     });
                 });
+        List<String> emailList = new ArrayList<>(emailSet);
+        List<String> phoneList = new ArrayList<>(phoneSet);
+        if (!emailSet.contains(primaryContact.getEmail()))
+            emailList.add(0, primaryContact.getEmail());
+        if (!phoneSet.contains(primaryContact.getPhone()))
+            phoneList.add(0, primaryContact.getPhone());
         IdentityResponseContact responseContact = IdentityResponseContact.builder()
                 .primaryContactId(primaryId)
                 .emails(emailList)

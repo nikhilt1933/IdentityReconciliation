@@ -10,8 +10,8 @@ import java.util.Set;
 @Data
 public class IdentityResponseContact {
     private Integer primaryContactId;
-    private Set<String> emails;
-    private Set<String> phoneNumbers;
+    private List<String> emails;
+    private List<String> phoneNumbers;
     private Set<Integer> secondaryContactIds;
 }
 
