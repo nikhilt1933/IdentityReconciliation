@@ -85,13 +85,14 @@ public class IdentityReconciliationService {
                 LOGGER.info("Email and Phone match both have same primary id");
                 primaryId = emailMatchPrimaryId;
             } else {
-                LOGGER.info("Email and Phone match both have different primary id {} {}",
+                LOGGER.info("Email and Phone match both have different primary id {} and {}",
                         emailMatchPrimaryId, phoneMatchPrimaryId);
                 Contact oldestContact = findOldestContactById(emailMatchPrimaryId, phoneMatchPrimaryId);
                 assert oldestContact != null;
                 Integer updatePrimaryId = emailMatchPrimaryId == oldestContact.getId() ?
                         phoneMatchPrimaryId : emailMatchPrimaryId;
-                LOGGER.info("Updating newer contact with the older id");
+                LOGGER.info("Updating newer contact with id {} with the older id {} details",
+                        updatePrimaryId, oldestContact.getId());
                 Contact updateContact = contactRepository.findById(updatePrimaryId).get();
                 updateContact.setLinkedId(oldestContact.getId());
                 updateContact.setPrecedence("secondary");
@@ -120,8 +121,8 @@ public class IdentityReconciliationService {
         LOGGER.info("Building response object");
         Contact primaryContact = contactRepository.findById(primaryId).get();
         Mapping mapping = mappingRepository.findById(primaryId).get();
-        Set<String> emailSet = new HashSet<>();
-        Set<String> phoneSet = new HashSet<>();
+        Set<String> emailList = new HashSet<>();
+        Set<String> phoneList = new HashSet<>();
         Set<Integer> secondaryContactList = new HashSet<>();
         JSONArray mappingArray = new JSONArray(mapping.getSecondaryMapping());
         mappingArray.toList().stream()
@@ -129,22 +130,22 @@ public class IdentityReconciliationService {
                     Optional<Contact> contact = contactRepository.findById((Integer) contactId);
                     Optional.ofNullable(contact).ifPresent(record -> {
                         if(!StringUtils.isEmpty(record.get().getEmail()))
-                            emailSet.add(record.get().getEmail());
+                            emailList.add(record.get().getEmail());
                         if(!StringUtils.isEmpty(record.get().getPhone()))
-                            phoneSet.add(record.get().getPhone());
+                            phoneList.add(record.get().getPhone());
                         secondaryContactList.add(record.get().getId());
                     });
                 });
-        List<String> emailList = new ArrayList<>(emailSet);
-        List<String> phoneList = new ArrayList<>(phoneSet);
-        if (!emailSet.contains(primaryContact.getEmail()))
-            emailList.add(0, primaryContact.getEmail());
-        if (!phoneSet.contains(primaryContact.getPhone()))
-            phoneList.add(0, primaryContact.getPhone());
+        emailList.remove(primaryContact.getEmail());
+        phoneList.remove((primaryContact.getPhone()));
+        List<String> emailListFinal = new ArrayList<>(emailList);
+        List<String> phoneListFinal = new ArrayList<>(phoneList);
+        emailListFinal.add(0, primaryContact.getEmail());
+        phoneListFinal.add(0, primaryContact.getPhone());
         IdentityResponseContact responseContact = IdentityResponseContact.builder()
                 .primaryContactId(primaryId)
-                .emails(emailList)
-                .phoneNumbers(phoneList)
+                .emails(emailListFinal)
+                .phoneNumbers(phoneListFinal)
                 .secondaryContactIds(secondaryContactList)
                 .build();
         return IdentityResponse.builder()
@@ -158,7 +159,8 @@ public class IdentityReconciliationService {
         Mapping mappingToDelete = mappingRepository.findById(idToDelete).get();
         String primaryMappingArray = primaryMapping.getSecondaryMapping();
         String mappingArrayToDelete = mappingToDelete.getSecondaryMapping();
-        String mergedMappingArray = primaryMappingArray.concat(mappingArrayToDelete).replace("][", ",");
+        String mergedMappingArray = primaryMappingArray.concat(mappingArrayToDelete).replace("][", ",")
+                .replace("]", "," + idToDelete + "]");
         LOGGER.info("Merged Mappings : {}", mergedMappingArray);
         primaryMapping.setSecondaryMapping(mergedMappingArray);
         mappingRepository.delete(mappingToDelete);
