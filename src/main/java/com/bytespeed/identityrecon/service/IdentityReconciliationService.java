@@ -157,12 +157,14 @@ public class IdentityReconciliationService {
         LOGGER.info("Updating mappings for ID : {}, {}", primaryId, idToDelete);
         Mapping primaryMapping = mappingRepository.findById(primaryId).get();
         Mapping mappingToDelete = mappingRepository.findById(idToDelete).get();
-        String primaryMappingArray = primaryMapping.getSecondaryMapping();
-        String mappingArrayToDelete = mappingToDelete.getSecondaryMapping();
-        String mergedMappingArray = primaryMappingArray.concat(mappingArrayToDelete).replace("][", ",")
-                .replace("]", "," + idToDelete + "]");
+        JSONArray primaryMappingArray = new JSONArray(primaryMapping.getSecondaryMapping());
+        JSONArray mappingArrayToDelete = new JSONArray(mappingToDelete.getSecondaryMapping());
+        LOGGER.info("Primary and secondary Mappings : {}, {}", primaryMappingArray, mappingArrayToDelete);
+        final JSONArray mergedMappingArray = new JSONArray(primaryMappingArray);
+        mergedMappingArray.put(idToDelete);
+        mappingArrayToDelete.toList().forEach(mergedMappingArray::put);
         LOGGER.info("Merged Mappings : {}", mergedMappingArray);
-        primaryMapping.setSecondaryMapping(mergedMappingArray);
+        primaryMapping.setSecondaryMapping(mergedMappingArray.toString());
         mappingRepository.delete(mappingToDelete);
         LOGGER.info("Updated Mappings successfully");
     }
