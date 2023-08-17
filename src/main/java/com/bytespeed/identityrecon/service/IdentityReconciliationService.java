@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -37,19 +37,20 @@ public class IdentityReconciliationService {
     private final Logger LOGGER = LoggerFactory.getLogger(IdentityReconciliationService.class);
 
     public IdentityResponse reconcile(IdentityRequest request) {
-        if (!isValidRequest(request)) {
+        if (!isValidRequest(request) || isBlankRequest(request)) {
             return buildErrorResponse();
         }
-
+        request.setEmail(request.getEmail().trim());
+        request.setPhoneNumber(request.getPhoneNumber().trim());
         Integer primaryId;
         LOGGER.info("Performing match for email and phone");
         List<Contact> emailMatch, phoneMatch;
         emailMatch = phoneMatch = new ArrayList<>();
-        if (!StringUtils.isEmpty(request.getEmail()) &&
+        if (!StringUtils.isBlank(request.getEmail()) &&
                 !"null".equalsIgnoreCase(request.getEmail())) {
             emailMatch = contactRepository.findByEmail(request.getEmail());
         }
-        if (!StringUtils.isEmpty(request.getPhoneNumber()) &&
+        if (!StringUtils.isBlank(request.getPhoneNumber()) &&
                 !"null".equalsIgnoreCase(request.getPhoneNumber())) {
             phoneMatch = contactRepository.findByPhone(request.getPhoneNumber());
         }
@@ -66,8 +67,8 @@ public class IdentityReconciliationService {
             LOGGER.info("Primary record for id : {}, {}", matchingContactId, primaryRecord);
             primaryId = primaryRecord.get().getPrimaryContactId();
             LOGGER.info("Got primary ID : {}", primaryId);
-            if (!StringUtils.isEmpty(request.getEmail()) &&
-                    !StringUtils.isEmpty(request.getPhoneNumber()) &&
+            if (!StringUtils.isBlank(request.getEmail()) &&
+                    !StringUtils.isBlank(request.getPhoneNumber()) &&
                     !"null".equalsIgnoreCase(request.getEmail()) &&
                     !"null".equalsIgnoreCase(request.getPhoneNumber())) {
                 LOGGER.info("New Email or Phone in present in request");
@@ -117,6 +118,10 @@ public class IdentityReconciliationService {
         return buildResponse(primaryId);
     }
 
+    private boolean isBlankRequest(IdentityRequest request) {
+        return StringUtils.isBlank(request.getEmail()) && StringUtils.isBlank(request.getPhoneNumber());
+    }
+
     private IdentityResponse buildResponse(Integer primaryId) {
         LOGGER.info("Building response object");
         Contact primaryContact = contactRepository.findById(primaryId).get();
@@ -129,9 +134,9 @@ public class IdentityReconciliationService {
                 .forEach(contactId -> {
                     Optional<Contact> contact = contactRepository.findById((Integer) contactId);
                     Optional.ofNullable(contact).ifPresent(record -> {
-                        if(!StringUtils.isEmpty(record.get().getEmail()))
+                        if(!StringUtils.isBlank(record.get().getEmail()))
                             emailList.add(record.get().getEmail());
-                        if(!StringUtils.isEmpty(record.get().getPhone()))
+                        if(!StringUtils.isBlank(record.get().getPhone()))
                             phoneList.add(record.get().getPhone());
                         secondaryContactList.add(record.get().getId());
                     });
@@ -140,8 +145,10 @@ public class IdentityReconciliationService {
         phoneList.remove((primaryContact.getPhone()));
         List<String> emailListFinal = new ArrayList<>(emailList);
         List<String> phoneListFinal = new ArrayList<>(phoneList);
-        emailListFinal.add(0, primaryContact.getEmail());
-        phoneListFinal.add(0, primaryContact.getPhone());
+        if (!StringUtils.isBlank(primaryContact.getEmail()))
+            emailListFinal.add(0, primaryContact.getEmail());
+        if (!StringUtils.isBlank(primaryContact.getPhone()))
+            phoneListFinal.add(0, primaryContact.getPhone());
         IdentityResponseContact responseContact = IdentityResponseContact.builder()
                 .primaryContactId(primaryId)
                 .emails(emailListFinal)
